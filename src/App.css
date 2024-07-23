@@ -1,0 +1,15 @@
+:root {
+    --background-color: #f0f0f0;
+    --text-color: #333;
+  }
+  
+  [data-theme="dim"] {
+    --background-color: #1a202c;
+    --text-color: #f0f0f0;
+  }
+  
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
