@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import Form from "./components/Form";
 import { IoMdMoon, IoMdSunny } from "react-icons/io";
 import "./App.css";
+import PieChart from "./components/PieChart";
+import { data } from "autoprefixer";
 
 function App() {
+  const [categories, setCategories] = useState(null);
+  const [data, setData] = useState(null);
+  const [repos, setRepos] = useState(null);
   const themeFromLocalStorage = () => localStorage.getItem("theme") || "light";
   const [userData, setUserData] = useState(null);
-  const [reposData, setReposData] = useState([]);
   const [theme, setTheme] = useState(themeFromLocalStorage);
 
   const getData = (userName) => {
@@ -16,8 +20,35 @@ function App() {
 
     fetch(`https://api.github.com/users/${userName}/repos`)
       .then((response) => response.json())
-      .then((repos) => setReposData(repos));
+      .then((repos) => setRepos(repos));
   };
+
+  useEffect(() => {
+    if (repos) {
+      const data = repos.reduce((acc, curVal) => {
+        const { language } = curVal;
+
+        try {
+          if (!acc[language]) {
+            throw new Error("Something went wrong :(");
+          } else {
+            acc[language] += 1;
+          }
+        } catch (error) {
+          acc[language] = 1;
+        }
+
+        return acc;
+      }, {});
+
+      console.log(data);
+      const keys = Object.keys(data);
+      const values = Object.values(data);
+
+      setCategories(keys);
+      setData(values);
+    }
+  }, [repos]);
 
   const handleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -74,9 +105,7 @@ function App() {
             <div className="flex justify-around text-center border-t border-gray-200  pt-6">
               <div>
                 <h4 className="text-gray-600 ">Repos</h4>
-                <p className="text-lg font-semibold text-gray-800 ">
-                  {reposData.length}
-                </p>
+                <p className="text-lg font-semibold text-gray-800 ">23</p>
               </div>
               <div>
                 <h4 className="text-gray-600 ">Followers</h4>
@@ -113,6 +142,9 @@ function App() {
             </div>
           </div>
         )}
+      </div>
+      <div>
+        {data && categories && <PieChart data={data} categories={categories} />}
       </div>
     </div>
   );

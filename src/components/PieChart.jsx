@@ -1,42 +1,47 @@
 import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
-  
-function PieChart() {
+
+function PieChart({ data, categories }) {
   const [chartData, setChartData] = useState({
-    series: [44, 55, 13, 43, 22],
+    series: [
+      {
+        data,
+      },
+    ],
     options: {
       chart: {
-        width: 380,
-        type: "pie",
+        type: "bar",
+        height: 350,
       },
-      labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              position: "bottom",
-            },
-          },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          borderRadiusApplication: "end",
+          horizontal: true,
         },
-      ],
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      xaxis: {
+        categories,
+      },
     },
   });
 
   return (
     <div>
-      <div id="chart">
-        <ReactApexChart
-          options={chartData.options}
-          series={chartData.series}
-          type="pie"
-          width={380}
-        />
+      <div>
+        <div id="chart">
+          <ReactApexChart
+            options={chartData.options}
+            series={chartData.series}
+            type="bar"
+            height={350}
+          />
+        </div>
+        <div id="html-dist"></div>
       </div>
-      <div id="html-dist"></div>
     </div>
   );
 }
